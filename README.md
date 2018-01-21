@@ -5,19 +5,19 @@ JSON Web Token (JWT) more information:
 [http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html)
 
 ## How to use this?
-### Install package
+#### Install package
 ```bash
 $ go get github.com/jayhuang75/gin-jwt-middleware
 ```
 
-### In your gin application main.go, import the package
+#### In your gin application main.go, import the package
 ```go
 import (
     "github.com/jayhuang75/gin-jwt-middleware"
 )
 ```
 
-### Use the middleware
+#### Use the middleware
 ```go
 app := gin.Default()
 
