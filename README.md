@@ -24,5 +24,5 @@ app := gin.Default()
 app.Use(auth.JWTAuthMiddleware(encoded, YOUR_SECRET)
 ```
 
-- encoded is a boolen: if your the JWT secret is encoded
+- encoded is a boolen: if your JWT secret is encoded
 - YOUR_SECRET: Your JWT secret, here you can use the env variable
