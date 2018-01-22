@@ -1,3 +1,6 @@
+// Package auth provides the easy function to validate the JWT, simple plug and play.
+// Its easy function to protect your api
+// JWT See https://jwt.io
 package auth
 
 import (
@@ -21,7 +24,7 @@ func RespondWithError(code int, message string, c *gin.Context) {
 	c.Abort()
 }
 
-// JWTAuthMiddleware middleware
+// JWTAuthMiddleware middleware function implementation
 func JWTAuthMiddleware(encoded bool, secret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth := c.GetHeader("Authorization")
