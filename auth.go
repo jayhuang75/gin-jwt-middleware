@@ -62,7 +62,6 @@ func JWTAuthMiddleware(encoded bool, secret string) gin.HandlerFunc {
 				mySecertKey = replacer.Replace(mySecertKey)
 
 				base64Decoded, _ := base64.StdEncoding.DecodeString(mySecertKey)
-				fmt.Println(base64Decoded)
 				// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
 				return base64Decoded, nil
 			}

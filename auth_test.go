@@ -13,7 +13,8 @@ import (
 )
 
 func TestJWTAuthMiddleware(t *testing.T) {
-	JWTAuthMiddleware(false, "mySercet")
+
+	os.Setenv("SECRET", "secret")
 
 	// Switch to test mode so you don't get such noisy output
 	gin.SetMode(gin.TestMode)
@@ -21,7 +22,7 @@ func TestJWTAuthMiddleware(t *testing.T) {
 	// Setup your router, just like you did in your main function, and
 	// register your routes
 	r := gin.Default()
-	r.Use(JWTAuthMiddleware(false, os.Getenv("JWT_SECRET")))
+	r.Use(JWTAuthMiddleware(false, os.Getenv("SECRET")))
 	r.GET("/api/v1")
 
 	////////////////////////////////////
@@ -97,32 +98,32 @@ func TestJWTAuthMiddleware(t *testing.T) {
 	assert.Equal(t, bodyString4, string(expectString))
 
 	////////////////////////////////////
-	// Test with Authorization header with Bearer and token but sigature is invalid
+	// Test with Authorization header with Bearer and token and it pass (token is from jwt.io)
 	////////////////////////////////////
 	req5, _ := http.NewRequest(http.MethodGet, "/api/v1", nil)
-	req5.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJXZWkuSHVhbmdAQ09SUC5BRC5DVEMiLCJzZXNzaW9uSUQiOiJuWjZlM3dKWFBaUndUOElvMHFncjF3akdqUFNsNzgtSCIsImlhdCI6MTUxNjUwMjM0MywiZXhwIjoxNTE2NTAyNDYzfQ.dRbEhMlhO1t1AuTLsvdYd-hva7K2tLbgQNNXJgb5GCw")
+	req5.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ")
 	// Create a response recorder so you can inspect the response
 	resp5 := httptest.NewRecorder()
 
 	// Perform the request
 	r.ServeHTTP(resp5, req5)
 
-	assert.Equal(t, resp5.Code, 401)
-	bodyBytes5, _ := ioutil.ReadAll(resp5.Body)
-	bodyString5 := string(bodyBytes5)
-	expect = &APIError{401, "Token is expired"}
-	expectString, _ = json.Marshal(expect)
-	assert.Equal(t, bodyString5, string(expectString))
+	assert.Equal(t, resp5.Code, 200)
+	// bodyBytes5, _ := ioutil.ReadAll(resp5.Body)
+	// bodyString5 := string(bodyBytes5)
+	// expect = &APIError{401, "Token is expired"}
+	// expectString, _ = json.Marshal(expect)
+	// assert.Equal(t, bodyString5, string(expectString))
 
 	////////////////////////////////////
-	// Test with Authorization header with Bearer and token but sigature is invalid
+	// Test with Authorization header with Bearer and token but signature is invalid
 	////////////////////////////////////
 	r1 := gin.Default()
-	r1.Use(JWTAuthMiddleware(true, os.Getenv("JWT_SECRET")))
+	r1.Use(JWTAuthMiddleware(true, os.Getenv("SECRET")))
 	r1.GET("/api/v1")
 
 	req6, _ := http.NewRequest(http.MethodGet, "/api/v1", nil)
-	req6.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJXZWkuSHVhbmdAQ09SUC5BRC5DVEMiLCJzZXNzaW9uSUQiOiJuWjZlM3dKWFBaUndUOElvMHFncjF3akdqUFNsNzgtSCIsImlhdCI6MTUxNjUwMjM0MywiZXhwIjoxNTE2NTAyNDYzfQ.dRbEhMlhO1t1AuTLsvdYd-hva7K2tLbgQNNXJgb5GCw")
+	req6.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ")
 	// Create a response recorder so you can inspect the response
 	resp6 := httptest.NewRecorder()
 
