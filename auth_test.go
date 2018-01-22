@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +21,7 @@ func TestJWTAuthMiddleware(t *testing.T) {
 	// Setup your router, just like you did in your main function, and
 	// register your routes
 	r := gin.Default()
-	r.Use(JWTAuthMiddleware(false, "mySecret"))
+	r.Use(JWTAuthMiddleware(false, os.Getenv("JWT_SECRET")))
 	r.GET("/api/v1")
 
 	////////////////////////////////////
@@ -109,8 +110,30 @@ func TestJWTAuthMiddleware(t *testing.T) {
 	assert.Equal(t, resp5.Code, 401)
 	bodyBytes5, _ := ioutil.ReadAll(resp5.Body)
 	bodyString5 := string(bodyBytes5)
-	expect = &APIError{401, "signature is invalid"}
+	expect = &APIError{401, "Token is expired"}
 	expectString, _ = json.Marshal(expect)
 	assert.Equal(t, bodyString5, string(expectString))
+
+	////////////////////////////////////
+	// Test with Authorization header with Bearer and token but sigature is invalid
+	////////////////////////////////////
+	r1 := gin.Default()
+	r1.Use(JWTAuthMiddleware(true, os.Getenv("JWT_SECRET")))
+	r1.GET("/api/v1")
+
+	req6, _ := http.NewRequest(http.MethodGet, "/api/v1", nil)
+	req6.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJXZWkuSHVhbmdAQ09SUC5BRC5DVEMiLCJzZXNzaW9uSUQiOiJuWjZlM3dKWFBaUndUOElvMHFncjF3akdqUFNsNzgtSCIsImlhdCI6MTUxNjUwMjM0MywiZXhwIjoxNTE2NTAyNDYzfQ.dRbEhMlhO1t1AuTLsvdYd-hva7K2tLbgQNNXJgb5GCw")
+	// Create a response recorder so you can inspect the response
+	resp6 := httptest.NewRecorder()
+
+	// Perform the request
+	r1.ServeHTTP(resp6, req6)
+
+	assert.Equal(t, resp6.Code, 401)
+	bodyBytes6, _ := ioutil.ReadAll(resp6.Body)
+	bodyString6 := string(bodyBytes6)
+	expect = &APIError{401, "signature is invalid"}
+	expectString, _ = json.Marshal(expect)
+	assert.Equal(t, bodyString6, string(expectString))
 
 }
