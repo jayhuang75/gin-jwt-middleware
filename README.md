@@ -1,4 +1,5 @@
 # gin-jwt-middleware
+[![Build Status](https://travis-ci.org/jayhuang75/gin-jwt-middleware.svg?branch=master)](https://travis-ci.org/jayhuang75/gin-jwt-middleware)
 
 ## What is JWT?
 JSON Web Token (JWT) more information: 
