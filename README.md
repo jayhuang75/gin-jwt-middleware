@@ -1,5 +1,6 @@
 # gin-jwt-middleware
 [![Build Status](https://travis-ci.org/jayhuang75/gin-jwt-middleware.svg?branch=master)](https://travis-ci.org/jayhuang75/gin-jwt-middleware) [![codecov](https://codecov.io/gh/jayhuang75/gin-jwt-middleware/branch/master/graph/badge.svg)](https://codecov.io/gh/jayhuang75/gin-jwt-middleware)
+[![Go Report Card](https://goreportcard.com/badge/github.com/jayhuang75/gin-jwt-middleware)](https://goreportcard.com/report/github.com/jayhuang75/gin-jwt-middleware)
 
 ## What is JWT?
 JSON Web Token (JWT) more information: 
